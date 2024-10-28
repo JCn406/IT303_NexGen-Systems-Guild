@@ -1,0 +1,196 @@
+Entities & Relationships for the Smart Urban Parking Management System
+User
+Attributes:
+UserID (Primary Key)
+Username
+Password
+Email
+PhoneNumber
+Role (Driver, Admin, ParkingManager)
+PreferredPaymentMethod
+LoyaltyPoints
+Relationships:
+One User can make multiple Reservations (One-to-Many).
+One User can have multiple Payments (One-to-Many).
+One User can own multiple Vehicles (One-to-Many).
+Vehicle
+Attributes:
+VehicleID (Primary Key)
+LicensePlate (Unique)
+VehicleType (Electric, Compact, SUV, etc.)
+UserID (Foreign Key)
+Relationships:
+Each Vehicle is linked to one User (Many-to-One).
+ParkingSpot
+Attributes:
+SpotID (Primary Key)
+LocationID (Foreign Key to ParkingLocation)
+SpotType (Compact, Electric, Disabled, etc.)
+AvailabilityStatus (Available, Reserved, Occupied)
+PricePerHour
+Relationships:
+Each ParkingSpot belongs to one ParkingLocation (Many-to-One).
+One ParkingSpot can be part of multiple Reservations (One-to-Many).
+One ParkingSpot has one ParkingSensor (One-to-One).
+ParkingLocation
+Attributes:
+LocationID (Primary Key)
+LocationName
+LocationAddress
+TotalSpots
+AvailableSpots
+SustainabilityScore (Green energy, EV charging, etc.)
+Relationships:
+Each ParkingLocation has multiple ParkingSpots (One-to-Many).
+Each ParkingLocation can have multiple Reservations (One-to-Many).
+Reservation
+Attributes:
+ReservationID (Primary Key)
+UserID (Foreign Key)
+SpotID (Foreign Key)
+VehicleID (Foreign Key)
+ReservationStartTime
+ReservationEndTime
+ReservationStatus (Pending, Confirmed, Completed, Canceled)
+Relationships:
+Each Reservation is made by one User (Many-to-One).
+Each Reservation is linked to one ParkingSpot (Many-to-One).
+Each Reservation is linked to one Vehicle (Many-to-One).
+Payment
+Attributes:
+PaymentID (Primary Key)
+ReservationID (Foreign Key)
+UserID (Foreign Key)
+PaymentAmount
+PaymentDate
+PaymentStatus (Pending, Completed, Failed)
+PaymentMethod (CreditCard, PayPal, Cryptocurrency, etc.)
+Relationships:
+Each Payment is for one Reservation (Many-to-One).
+Each Payment is linked to one User (Many-to-One).
+ParkingSensor
+Attributes:
+SensorID (Primary Key)
+SpotID (Foreign Key)
+SensorStatus (Active, Inactive, Malfunctioning)
+OccupancyStatus (Occupied, Vacant)
+LastUpdateTimestamp
+Relationships:
+Each ParkingSensor is installed on one ParkingSpot (One-to-One).
+ParkingManager
+Attributes:
+ManagerID (Primary Key)
+Name
+Email
+PhoneNumber
+AssignedLocationID (Foreign Key to ParkingLocation)
+Relationships:
+Each ParkingManager manages one ParkingLocation (One-to-One).
+DynamicPricing
+Attributes:
+PricingID (Primary Key)
+LocationID (Foreign Key)
+PriceChangeDate
+DemandLevel (Low, Medium, High)
+NewPricePerHour
+Relationships:
+Each DynamicPricing entry is tied to one ParkingLocation (Many-to-One).
+
+ER Diagram Structure & Relationships Summary
+User: Has multiple Reservations, Payments, and Vehicles.
+Reservation: Linked to a User, ParkingSpot, and Vehicle.
+ParkingSpot: Belongs to a ParkingLocation and has a ParkingSensor.
+ParkingLocation: Hosts multiple ParkingSpots and is managed by one ParkingManager.
+Payment: Made for each Reservation by a User.
+DynamicPricing: Adjusts based on demand in a ParkingLocation.
+
+Normalization & Data Integrity
+1st Normal Form (1NF): Each entity has atomic values (e.g., single values for Role and PaymentMethod).
+2nd Normal Form (2NF): All non-key attributes depend on the primary key.
+3rd Normal Form (3NF): No transitive dependencies exist.
+
+1. Creating the Database and Tables
+CREATE DATABASE ParkTastic;
+USE ParkTastic;
+
+-- User table
+CREATE TABLE User (
+    UserID INT PRIMARY KEY AUTO_INCREMENT,
+    Username VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Phone VARCHAR(15),
+    LoyaltyPoints INT DEFAULT 0
+);
+
+-- Vehicle table
+CREATE TABLE Vehicle (
+    VehicleID INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT,
+    LicensePlate VARCHAR(20) NOT NULL,
+    VehicleType VARCHAR(20),
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
+);
+
+-- ParkingLocation table
+CREATE TABLE ParkingLocation (
+    LocationID INT PRIMARY KEY AUTO_INCREMENT,
+    LocationName VARCHAR(50) NOT NULL,
+    Address VARCHAR(100),
+    TotalSpaces INT,
+    AvailableSpaces INT
+);
+
+-- ParkingSpot table
+CREATE TABLE ParkingSpot (
+    SpotID INT PRIMARY KEY AUTO_INCREMENT,
+    LocationID INT,
+    IsOccupied BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (LocationID) REFERENCES ParkingLocation(LocationID)
+);
+
+-- Reservation table
+CREATE TABLE Reservation (
+    ReservationID INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT,
+    SpotID INT,
+    ReservationTime DATETIME,
+    DurationHours INT,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (SpotID) REFERENCES ParkingSpot(SpotID)
+);
+
+-- Payment table
+CREATE TABLE Payment (
+    PaymentID INT PRIMARY KEY AUTO_INCREMENT,
+    ReservationID INT,
+    Amount DECIMAL(8, 2),
+    PaymentTime DATETIME,
+    FOREIGN KEY (ReservationID) REFERENCES Reservation(ReservationID)
+);
+
+-- ParkingSensor table
+CREATE TABLE ParkingSensor (
+    SensorID INT PRIMARY KEY AUTO_INCREMENT,
+    SpotID INT,
+    SensorStatus VARCHAR(20),
+    LastUpdated DATETIME,
+    FOREIGN KEY (SpotID) REFERENCES ParkingSpot(SpotID)
+);
+
+-- DynamicPricing table
+CREATE TABLE DynamicPricing (
+    PricingID INT PRIMARY KEY AUTO_INCREMENT,
+    LocationID INT,
+    BaseRate DECIMAL(8, 2),
+    PeakRate DECIMAL(8, 2),
+    FOREIGN KEY (LocationID) REFERENCES ParkingLocation(LocationID)
+);
+
+2. Using SQL Workbench
+Create the Database: Execute the CREATE DATABASE command.
+Create Tables: Run the SQL commands to create tables and define relationships.
+Establish Connections: Verify foreign keys and relationships.
+Run Sample Data Inserts:
+
+INSERT INTO User (Username, Email, Phone) VALUES ('JohnDoe', 'john@example.com', '123-456-7890');
+INSERT INTO Vehicle (UserID, LicensePlate, VehicleType) VALUES (1, 'ABC123', 'Sedan');
