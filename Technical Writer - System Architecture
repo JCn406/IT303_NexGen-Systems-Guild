@@ -1,0 +1,195 @@
+PARK-TASTIC Smart Urban Parking Management System: System Architecture
+
+The system architecture of PARK-TASTIC is designed to optimize parking management through a blend of real-time monitoring, user interface applications, and data management, facilitated by a layered infrastructure. Below, the system components and their interactions are defined to give an overview of how PARK-TASTIC operates.
+
+
+1. Hardware Components
+
+Client Devices:
+
+Smartphones, tablets, and computers used by drivers, parking managers, and administrators.
+
+Equipped with network connectivity (e.g., Wi-Fi, 4G/5G) to access the PARK-TASTIC application.
+
+
+Edge Sensors:
+
+IoT sensors installed in each parking spot to monitor occupancy and availability in real-time.
+
+Types: Proximity, pressure, and optical sensors.
+
+Connected to the network via low-energy protocols like Zigbee, Wi-Fi, or LPWAN for continuous data updates.
+
+
+Local Parking Management Servers:
+
+Servers located on-site to collect and temporarily store parking data.
+
+Handles data aggregation, preprocessing, and communication with central cloud servers.
+
+
+Central Cloud Servers:
+
+Hosted on cloud infrastructure (e.g., AWS, Azure) for scalable, high-availability services.
+
+Stores user data, parking data, reservations, and payment history.
+
+
+
+
+2. Software Applications
+
+Mobile and Web Application (Front-End):
+
+User Interface: React Native or Flutter for cross-platform mobile compatibility; React or Angular for web.
+
+Functionality: Account management, parking reservations, payment processing, and real-time space availability.
+
+Client-Side Processing: Utilizes local device resources for smooth user experiences (e.g., real-time map rendering, notifications).
+
+
+Backend (Application Server):
+
+API Service: Built with ASP.NET Core or Node.js to handle requests between client applications and database services.
+
+Business Logic: Manages reservation handling, pricing adjustments, payment processing, and loyalty points calculations.
+
+Authentication and Authorization: Role-based access for users, parking managers, and administrators using OAuth 2.0 or JWT tokens.
+
+
+Database (Data Management Layer):
+
+Database Management System: SQL-based system (e.g., MySQL, PostgreSQL) for structured storage of user, reservation, payment, and sensor data.
+
+Data Warehousing: Optional NoSQL databases (e.g., MongoDB) for storing large sets of historical data, used for analytics.
+
+Data Caching: Redis or Memcached for caching frequently accessed data, improving response times for users.
+
+
+IoT Data Management (Edge Processing):
+
+Real-time processing and filtering of data from sensors before relaying to the central server.
+
+Edge software manages connectivity and status updates, reducing latency in the availability data.
+
+
+Analytics and Reporting Tools:
+
+An analytics dashboard (e.g., Power BI, Tableau) for parking managers and administrators to view parking trends, occupancy rates, and revenue insights.
+
+Predictive analytics models for dynamic pricing, demand forecasting, and space optimization.
+
+
+
+
+3. Networking Components
+
+Internet Gateway:
+
+Facilitates secure data transfer between the local parking servers and the cloud servers, ensuring that data is encrypted using protocols like HTTPS or MQTT.
+
+
+Local Network (LAN):
+
+Connects IoT sensors to local parking servers, typically via Wi-Fi, LPWAN, or Zigbee.
+
+Provides a high-speed network within each parking area to ensure fast updates to parking spot availability.
+
+
+Cloud Network:
+
+Connects all components across different geographic locations, supporting data synchronization, redundancy, and backup through cloud services.
+
+
+Firewall and VPN:
+
+Ensures secure communication between the client devices and backend servers, with added security for administrators via VPN.
+
+
+
+
+4. System Architecture Diagram Overview
+
+1. Client Layer (Users’ devices running mobile/web app):
+
+Provides real-time interaction for users, parking managers, and administrators.
+
+Connects to the backend through RESTful or GraphQL API over HTTPS.
+
+
+
+2. Application Layer (Backend API Server):
+
+Interprets requests from clients, processes reservations, payments, and sends parking data updates.
+
+Manages business logic for dynamic pricing, authentication, and authorization.
+
+
+
+3. Data Layer (Database Servers):
+
+Stores structured and unstructured data, including user accounts, reservations, payments, and historical sensor data.
+
+Connects with edge data management to update spot availability.
+
+
+
+4. Edge Layer (IoT Sensors and Local Server):
+
+Collects real-time data on parking occupancy.
+
+Local processing minimizes latency, with periodic data synchronization to central servers.
+
+
+
+5. Analytics and Dashboard Layer (Cloud-Based Analytics):
+
+Offers insights and predictions through data analytics.
+
+Allows for real-time monitoring and reporting for parking managers.
+
+
+
+
+
+How the Components Interact
+
+1. User Interaction:
+
+Users interact with the system via a mobile or web app to view parking availability, make reservations, and complete payments.
+
+These requests are sent to the backend server.
+
+
+
+2. Backend Processing:
+
+The backend server processes incoming user requests, fetches or updates data from the database, and returns relevant information to users.
+
+Handles all business logic, including user authentication, spot availability checks, and reservation management.
+
+
+
+3. Data Flow from IoT Sensors:
+
+IoT sensors send real-time occupancy data to the local server, which updates availability.
+
+Aggregated data is then sent to the central database for synchronization.
+
+
+
+4. Analytics and Management:
+
+The dashboard provides managers with insights on usage patterns, pricing recommendations, and system status.
+
+Administrators adjust settings, pricing, and monitor performance through a secure interface.
+
+
+
+
+
+---
+
+Summary
+
+The PARK-TASTIC system is built on a modular, layered architecture with distinct hardware, software, and networking components. Its flexibility allows easy scaling and efficient management of urban parking, offering users a smooth experience while delivering valuable insights to parking managers and city planners.
